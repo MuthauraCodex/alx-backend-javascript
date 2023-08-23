@@ -1,37 +1,26 @@
-/**
- * readDatabase that accepts a file path as argument and
- * contains functions that are used to read the database
- */
-const fs = require('fs');
+import fs from 'fs';
 
-const readDatabase = (filePath) => {
-  const filePromise = new Promise((resolve, reject) => {
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        const studentsArray = data.trim().split('\n').slice(1);
-
-        const students = studentsArray.map((student) => {
-          const fields = student.replace('\r', '').split(',');
-          return fields;
-        });
-
-        const categories = [...new Set(students.map((student) => student[student.length - 1]))];
-
-        const fields = {};
-
-        categories.forEach((category) => {
-          fields[category] = students.filter(
-            (student) => student[student.length - 1] === category,
-          ).map((student) => student[0]);
-        });
-
-        resolve(fields);
-      }
-    });
+// eslint-disable-next-line import/prefer-default-export
+export const readDatabase = (filePath) => new Promise((resolve, reject) => {
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      reject(err);
+    } else {
+      const lines = data.trim().split('\n');
+      const fields = {};
+      lines.forEach((line, index) => {
+        if (index === 0) {
+          // Skip the header line
+          return;
+        }
+        // eslint-disable-next-line no-unused-vars
+        const [firstName, lastName, age, field] = line.split(',');
+        if (!fields[field]) {
+          fields[field] = [];
+        }
+        fields[field].push(`${firstName} ${lastName}`);
+      });
+      resolve(fields);
+    }
   });
-  return filePromise;
-};
-
-module.exports = readDatabase;
+});
