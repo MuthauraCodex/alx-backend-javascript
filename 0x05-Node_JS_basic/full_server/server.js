@@ -1,17 +1,21 @@
-// import routes from './routes';
-
-import router from './routes';
-
 const express = require('express');
 const app = express();
+const routes = require('./routes');
 
-// Use the routes defined in full_server/routes/index.js
-app.use('/', router);
+const PORT = 1245;
+const DB_FILENAME = process.argv[2]; // Retrieve database filename from command line
 
-// Start the server on port 1245
-const port = 1245;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Middleware to attach database filename to the request object
+app.use((req, res, next) => {
+  req.dbFilePath = DB_FILENAME;
+  next();
+});
+
+// Use routes
+app.use('/', routes);
+
+app.listen(PORT, () => {
+  console.log(`Server is running and listening on port ${PORT}`);
 });
 
 export default app;

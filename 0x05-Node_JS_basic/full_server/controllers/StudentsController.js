@@ -1,41 +1,32 @@
-import { readDatabase } from '../utils.js';
-// const readDatabase = require('../utils.js');
-// import readDatabase from '../utils.js';
+const { readDatabase } = require('../utils');
 
-export class StudentsController {
+class StudentsController {
   static async getAllStudents(req, res) {
     try {
-      const dbFilePath = process.argv[2]; // Get file path from command line argument
-      const fields = await readDatabase(dbFilePath);        
-      const fieldsSorted = Object.keys(fields).sort((a, b) =>
-        a.localeCompare(b, undefined, { sensitivity: 'base' })
-      );
-      const lines = [
-        'This is the list of our students',
-        ...fieldsSorted.map((field) => {
-          const students = fields[field].sort();
-          return `Number of students in ${field}: ${
-            students.length
-          }. List: ${students.join(', ')}`;
-        }),
-      ];
-      res.status(200).send(lines.join('\n'));
-    } catch (err) {
+      const data = await readDatabase(req.dbFilePath);
+      // Process data to display the required information
+      // Example: "Number of students in CS: 6. List: Johann, Arielle, ..."
+      const formattedData = ...;
+      res.status(200).send(`This is the list of our students\n${formattedData}`);
+    } catch (error) {
       res.status(500).send('Cannot load the database');
     }
   }
 
   static async getAllStudentsByMajor(req, res) {
-    const major = req.params.major.toUpperCase();
+    const major = req.params.major;
     if (major !== 'CS' && major !== 'SWE') {
       res.status(500).send('Major parameter must be CS or SWE');
       return;
     }
+
     try {
-      const fields = await readDatabase(req.app.locals.dbFilePath);
-      const students = fields[major] ? fields[major].map(name => name.split(" ")[0]) : [];
-      res.status(200).send(`List: ${students.join(', ')}`);
-    } catch (err) {
+      const data = await readDatabase(req.dbFilePath);
+      // Process data to display the list of first names for the specified major
+      // Example: "List: Guillaume, Joseph, Paul, Tommy"
+      const formattedData = ...;
+      res.status(200).send(`List: ${formattedData}`);
+    } catch (error) {
       res.status(500).send('Cannot load the database');
     }
   }
