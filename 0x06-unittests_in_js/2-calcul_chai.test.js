@@ -4,7 +4,7 @@
 const { expect } = require('chai');
 const calculateNumber = require('./1-calcul');
 
-// You can assume a and b are always number
+// Assume a and b are always number
 
 describe('calculateNumber', () => {
   it('handles adding two rounded numbers when type is SUM', () => {

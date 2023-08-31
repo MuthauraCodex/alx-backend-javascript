@@ -1,19 +1,21 @@
-const calculateNumber = (type, a, b) => {
-  a = Math.round(a);
-  b = Math.round(b);
+function calculateNumber(type, a, b) {
+  const roundedA = Math.round(a);
+  const roundedB = Math.round(b);
+
   switch (type) {
     case 'SUM':
-      return (a + b);
+      return roundedA + roundedB;
     case 'SUBTRACT':
-      return (a - b);
+      return roundedA - roundedB;
     case 'DIVIDE':
-      if (b === 0) {
+      if (roundedB === 0) {
         return 'Error';
       }
-      return (a / b);
+      return roundedA / roundedB;
+
     default:
-      return 'Error';
+      throw new Error(`Invalid type: ${type}`);
   }
-};
+}
 
 module.exports = calculateNumber;
